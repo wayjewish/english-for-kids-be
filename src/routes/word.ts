@@ -15,11 +15,16 @@ router.get('/', async (req, res) => {
     category?: string;
   } = {};
 
-  if (req.query.category && typeof req.query.category === 'string') {
-    filter.category = req.query.category;
-  }
+  const options: {
+    skip?: number;
+    limit?: number;
+  } = {};
 
-  await WordModel.find(filter)
+  if (req.query.category) filter.category = String(req.query.category);
+  if (req.query.skip) options.skip = Number(req.query.skip);
+  if (req.query.limit) options.limit = Number(req.query.limit);
+
+  await WordModel.find(filter, null, options)
     .populate('category')
     .exec((error: CallbackError, words: typeof WordModel[]) => {
       if (error) res.status(500).json({ message: error.message });
@@ -40,13 +45,28 @@ router.post('/', guard, loader.fields([{ name: 'image' }, { name: 'audio' }]), a
   try {
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-    const image = await cloudinary.uploader.upload(files.image[0].path);
-    const audio = await cloudinary.uploader.upload(files.audio[0].path, { resource_type: 'video' });
+    let image: string | null = null;
+    let audio: string | null = null;
+    if (files.image) {
+      const resImage: UploadApiResponse = await cloudinary.uploader.upload(files.image[0].path);
+      image = resImage.url;
+    }
+    if (files.audio) {
+      const resAudio: UploadApiResponse = await cloudinary.uploader.upload(files.audio[0].path, {
+        resource_type: 'video',
+      });
+      audio = resAudio.url;
+    }
+
+    if (!image)
+      image = 'https://res.cloudinary.com/wayjewish/image/upload/v1626985262/default_cz4f7g.jpg';
+    if (!audio)
+      audio = 'https://res.cloudinary.com/wayjewish/video/upload/v1626985054/default_shydxy.mp3';
 
     const newWord = new WordModel({
       ...req.body,
-      audio: audio.url,
-      image: image.url,
+      audio,
+      image,
     });
 
     await newWord.save((error: CallbackError, word: typeof WordModel) => {
@@ -56,8 +76,8 @@ router.post('/', guard, loader.fields([{ name: 'image' }, { name: 'audio' }]), a
       });
     });
 
-    fs.unlink(files.image[0].path);
-    fs.unlink(files.audio[0].path);
+    if (files.image) fs.unlink(files.image[0].path);
+    if (files.audio) fs.unlink(files.audio[0].path);
   } catch (error) {
     res.send(error);
   }
@@ -71,11 +91,23 @@ router.put(
     try {
       const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-      let image: UploadApiResponse | null = null;
-      let audio: UploadApiResponse | null = null;
-      if (files.image) image = await cloudinary.uploader.upload(files.image[0].path);
-      if (files.audio)
-        audio = await cloudinary.uploader.upload(files.audio[0].path, { resource_type: 'video' });
+      let image: string | null = null;
+      let audio: string | null = null;
+      if (files.image) {
+        const resImage: UploadApiResponse = await cloudinary.uploader.upload(files.image[0].path);
+        image = resImage.url;
+      }
+      if (files.audio) {
+        const resAudio: UploadApiResponse = await cloudinary.uploader.upload(files.audio[0].path, {
+          resource_type: 'video',
+        });
+        audio = resAudio.url;
+      }
+
+      if (!image)
+        image = 'https://res.cloudinary.com/wayjewish/image/upload/v1626985262/default_cz4f7g.jpg';
+      if (!audio)
+        audio = 'https://res.cloudinary.com/wayjewish/video/upload/v1626985054/default_shydxy.mp3';
 
       const currentWord = await WordModel.findById(
         req.params.id,
@@ -88,14 +120,12 @@ router.put(
       const newWord = {
         word: currentWord.word,
         translation: currentWord.translation,
-        audio: currentWord.audio,
-        image: currentWord.image,
+        audio,
+        image,
       };
 
       if (req.body.word) newWord.word = req.body.word;
       if (req.body.translation) newWord.translation = req.body.translation;
-      if (audio) newWord.audio = audio.url;
-      if (image) newWord.image = image.url;
 
       await WordModel.findByIdAndUpdate(req.params.id, newWord, { new: true })
         .populate('category')

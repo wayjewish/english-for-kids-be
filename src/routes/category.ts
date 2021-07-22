@@ -6,10 +6,20 @@ import guard from '../middleware/guard';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  await CategoryModel.find().exec((error: CallbackError, categories: typeof CategoryModel[]) => {
-    if (error) res.status(500).json({ message: error.message });
-    res.json(categories);
-  });
+  const options: {
+    skip?: number;
+    limit?: number;
+  } = {};
+
+  if (req.query.skip) options.skip = Number(req.query.skip);
+  if (req.query.limit) options.limit = Number(req.query.limit);
+
+  await CategoryModel.find({}, null, options).exec(
+    (error: CallbackError, categories: typeof CategoryModel[]) => {
+      if (error) res.status(500).json({ message: error.message });
+      res.json(categories);
+    },
+  );
 });
 
 router.get('/:id', async (req, res) => {

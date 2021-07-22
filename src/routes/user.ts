@@ -31,7 +31,6 @@ router.post('/login', async (req, res) => {
           _id: candidate._id,
         },
         process.env.JWT_KEY,
-        { expiresIn: '10h' },
       );
 
       res.json({
