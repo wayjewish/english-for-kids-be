@@ -1,0 +1,441 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "wayjewish EFK be",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://wayjewish-efk-back.herokuapp.com/"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Category": {
+        "properties": {
+          "_id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Word": {
+        "properties": {
+          "_id": {
+            "type": "integer"
+          },
+          "word": {
+            "type": "string"
+          },
+          "translation": {
+            "type": "string"
+          },
+          "audio": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/category": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "security": [],
+        "summary": "get all category",
+        "description": "get all category",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "create category",
+        "description": "create category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "example",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Category name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "description": "categoryId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "security": [],
+        "summary": "get category",
+        "description": "get category",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "update category",
+        "description": "update category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "example",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Category name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "update category",
+        "description": "update category",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/word": {
+      "get": {
+        "tags": [
+          "Word"
+        ],
+        "security": [],
+        "summary": "get all word",
+        "description": "get all word",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Word"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "create word",
+        "description": "create word",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "example",
+                "properties": {
+                  "word": {
+                    "type": "string",
+                    "description": "word"
+                  },
+                  "translation": {
+                    "type": "string",
+                    "description": "translation"
+                  },
+                  "audio": {
+                    "type": "string",
+                    "description": "audio link"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "image link"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "categoryId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Word"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/word/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "description": "wordId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Word"
+        ],
+        "security": [],
+        "summary": "get word",
+        "description": "get word",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Word"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "update word",
+        "description": "update word",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "example",
+                "properties": {
+                  "word": {
+                    "type": "string",
+                    "description": "word"
+                  },
+                  "translation": {
+                    "type": "string",
+                    "description": "translation"
+                  },
+                  "audio": {
+                    "type": "string",
+                    "description": "audio link"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "image link"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "categoryId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Word"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "update word",
+        "description": "update word",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Word"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "create word",
+        "description": "create word",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "example",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "description": "login"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
